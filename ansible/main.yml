@@ -1,4 +1,5 @@
 ---
+
 - hosts: all
   become: yes
   gather_facts: yes
@@ -8,9 +9,10 @@
     - geerlingguy.packer-debian
 
   tasks:
-    - apt: "name={{ item }} state=installed"
-      with_items:
-        - git
-        - wget
-        - curl
-        - vim
+  - import_role:
+       name: ethereum
+  - apt: "name={{ item }} state=installed"
+    with_items:
+      - wget
+      - curl
+      - vim

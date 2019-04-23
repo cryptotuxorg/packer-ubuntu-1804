@@ -1,0 +1,27 @@
+---
+# tasks file for ethereum
+
+
+- hosts: all
+  become: yes
+  become: yes
+  gather_facts: yes
+
+  tasks:
+
+    - name: install requirements for geth
+      apt: pkg=software-properties-common state=present
+
+    - name: add ethereum ppa
+      apt_repository: repo='ppa:ethereum/ethereum' update_cache=yes
+
+    - name: install geth
+      apt: pkg=ethereum state=present
+
+    - name: check parity installed
+      stat: path=/snap/bin/parity
+      register: parity_installed
+
+    - name: install parity
+      command: snap install parity
+      when: not parity_installed.stat.exists
