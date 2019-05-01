@@ -1,44 +1,37 @@
-# Packer Example - Ubuntu 18.04 minimal Vagrant Box
+## Testing Playbooks
 
-**Current Ubuntu Version Used**: 18.04.2
+Copy the content of your host public key
+    cat ~/.ssh/id_rsa.pub
 
-**Pre-built Vagrant Box**:
+Create the VM
 
-  - [`vagrant init geerlingguy/ubuntu1804`](https://vagrantcloud.com/geerlingguy/boxes/ubuntu1804)
+    cd test
+    vagrant up
+    vagrant ssh
 
-This example build configuration installs and configures Ubuntu 18.04 x86_64 minimal using Ansible, and then generates a Vagrant box file for VirtualBox.
+Edit ~/.ssh/authorized_keys inside the VM and paste your host public key
 
-The example can be modified to use more Ansible roles, plays, and included playbooks to fully configure (or partially) configure a box file suitable for deployment for development environments.
+Edit ~/.ssh/config on your host and add
 
-## Requirements
+    Host cryptotux-test
+        Hostname 127.0.0.1
+        Port 2222
+        User vagrant
+        IdentityFile ~/.ssh/id_rsa
 
-The following software must be installed/present on your local machine before you can use Packer to build the Vagrant box file:
 
-  - [Packer](http://www.packer.io/)
-  - [Vagrant](http://vagrantup.com/)
-  - [VirtualBox](https://www.virtualbox.org/) (if you want to build the VirtualBox box)
-  - [Ansible](http://docs.ansible.com/intro_installation.html)
+Try the ssh connection
 
-## Usage
+    ssh cryptotux-test
+    exit
 
-Make sure all the required software (listed above) is installed, then cd to the directory containing this README.md file, and run:
+Try ansible connection
 
-    $ packer build -var 'version=1.2.0' ubuntu1804.json
+    ansible test -i ansible/hosts -m ping
 
-After a few minutes, Packer should tell you the box was generated successfully, and the box was uploaded to Vagrant Cloud.
+## Prerequisites
 
-> **Note**: This configuration includes a post-processor that pushes the built box to Vagrant Cloud (which requires a `VAGRANT_CLOUD_TOKEN` environment variable to be set); remove the `vagrant-cloud` post-processor from the Packer template to build the box locally and not push it to Vagrant Cloud. You don't need to specify a `version` variable either, if not using the `vagrant-cloud` post-processor.
 
-## Testing built boxes
 
-There's an included Vagrantfile that allows quick testing of the built Vagrant boxes. From this same directory, run the following command after building the box:
-
-    $ vagrant up
-
-## License
-
-MIT license.
-
-## Author Information
-
-Created in 2018 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
+    ansible-galaxy install geerlingguy.nfs
+    ansible-galaxy install geerlingguy.packer-debian

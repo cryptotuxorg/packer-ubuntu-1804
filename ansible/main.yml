@@ -4,15 +4,16 @@
   become: yes
   gather_facts: yes
 
-  roles:
-    - geerlingguy.nfs
-    - geerlingguy.packer-debian
-
   tasks:
-  - import_role:
-       name: ethereum
-  - apt: "name={{ item }} state=installed"
-    with_items:
-      - wget
-      - curl
-      - vim
+  - name: Execute nfs role
+    include_role:
+      name: geerlingguy.nfs
+
+  - name: Execute packer role
+    include_role:
+      name: geerlingguy.packer-debian
+
+  - name: Execute Ethereum server role
+    include_role:
+      name: ethereum_server
+
